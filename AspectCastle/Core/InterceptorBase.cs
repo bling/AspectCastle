@@ -16,7 +16,7 @@ namespace AspectCastle.Core
     public abstract class InterceptorBase<TMarker> : IInterceptor, IInterceptorMarkerProvider
         where TMarker : MarkerBaseAttribute, ICloneable, new()
     {
-        public const string DefaultMarkerInstanceKey = "Mmx.Infrastructure.interception.defaultmarkerinstance";
+        public const string DefaultMarkerInstanceKey = "aspectcastle.defaultmarkerinstance";
 
         private readonly Hashtable cache = new Hashtable(); // hashtable used instead of dictionary for lock-free performance
         private ILogger log = NullLogger.Instance;
