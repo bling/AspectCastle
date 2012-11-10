@@ -11,13 +11,13 @@ namespace AspectCastle
     {
         protected override void Intercept(IInvocation invocation, WithMethodInvocationAttribute marker)
         {
-            if (!this.IsLoggerEnabled(marker.LogLevel))
+            if (!this.IsLoggerEnabled(marker.LoggerLevel))
             {
                 invocation.Proceed();
                 return;
             }
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendFormat("{0}.{1}(", invocation.TargetType != null ? invocation.TargetType.Name : invocation.Method.DeclaringType.Name, invocation.Method.Name);
             foreach (object obj in invocation.Arguments)
             {
@@ -31,11 +31,12 @@ namespace AspectCastle
                 }
                 sb.Append(", ");
             }
+            
             if (invocation.Arguments.Length > 0)
                 sb.Remove(sb.Length - 2, 2);
 
             sb.Append(") invoked");
-            Stopwatch sw = Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
             bool error = false;
             try
             {
@@ -57,7 +58,7 @@ namespace AspectCastle
                     sb.AppendFormat("  ({0}ms).", sw.ElapsedMilliseconds);
                 }
                 Console.WriteLine(sb.ToString());
-                Log(marker.LogLevel, sb.ToString);
+                Log(marker.LoggerLevel, sb.ToString);
             }
         }
     }

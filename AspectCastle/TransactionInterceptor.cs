@@ -19,12 +19,12 @@ namespace AspectCastle
             };
             using (var scope = new TransactionScope(marker.TransactionScopeOption, transactionOptions))
             {
-                Log(marker.LogLevel, () => "Transaction started.");
+                Log(marker.LoggerLevel, () => "Transaction started.");
                 try
                 {
                     invocation.Proceed();
                     scope.Complete();
-                    Log(marker.LogLevel, () => "Transaction completed.");
+                    Log(marker.LoggerLevel, () => "Transaction completed.");
                 }
                 catch (Exception e)
                 {

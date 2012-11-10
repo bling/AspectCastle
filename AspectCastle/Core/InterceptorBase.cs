@@ -18,8 +18,8 @@ namespace AspectCastle.Core
     {
         public const string DefaultMarkerInstanceKey = "Mmx.Infrastructure.interception.defaultmarkerinstance";
 
-        private readonly Hashtable _cache = new Hashtable(); // hashtable used instead of dictionary for lock-free performance
-        private ILogger _log = NullLogger.Instance;
+        private readonly Hashtable cache = new Hashtable(); // hashtable used instead of dictionary for lock-free performance
+        private ILogger log = NullLogger.Instance;
 
         protected InterceptorBase()
         {
@@ -29,10 +29,10 @@ namespace AspectCastle.Core
         /// <summary>Gets a copy of all markers in the internal collection.</summary>
         public IDictionary<MethodInfo, TMarker> GetMarkers()
         {
-            lock (this._cache.SyncRoot)
+            lock (this.cache.SyncRoot)
             {
                 var result = new Dictionary<MethodInfo, TMarker>();
-                foreach (DictionaryEntry entry in this._cache)
+                foreach (DictionaryEntry entry in this.cache)
                     result[(MethodInfo)entry.Key] = (TMarker)entry.Value;
 
                 return result;
@@ -45,14 +45,18 @@ namespace AspectCastle.Core
         [DebuggerStepThrough]
         void IInterceptor.Intercept(IInvocation invocation)
         {
-            MethodInfo key = invocation.MethodInvocationTarget;
-            TMarker marker = this._cache[key] as TMarker;
+            var key = invocation.MethodInvocationTarget;
+            var marker = this.cache[key] as TMarker;
             if (marker == null)
             {
-                lock (this._cache.SyncRoot)
+                lock (this.cache.SyncRoot)
                 {
-                    marker = this._cache[key] as TMarker;
+// ReSharper disable ExpressionIsAlwaysNull
+                    marker = this.cache[key] as TMarker;
+// ReSharper restore ExpressionIsAlwaysNull
+// ReSharper disable ConditionIsAlwaysTrueOrFalse
                     if (marker == null)
+// ReSharper restore ConditionIsAlwaysTrueOrFalse
                     {
                         try
                         {
@@ -70,12 +74,12 @@ namespace AspectCastle.Core
                                 if (!marker.Intercept)
                                     marker = null;
                             }
-                            this._cache[key] = marker;
+                            this.cache[key] = marker;
                         }
                         catch (Exception e)
                         {
                             this.Logger.Error(string.Format("Unable to parse or generate a marker for the invocation method {0}.", invocation.Method), e);
-                            this._cache[key] = null;
+                            this.cache[key] = null;
                         }
                     }
                 }
@@ -94,7 +98,11 @@ namespace AspectCastle.Core
         public Type MarkerType { get; private set; }
 
         /// <summary>Gets or sets the logger for this instance.</summary>
-        public ILogger Logger { get { return this._log; } set { this._log = value ?? NullLogger.Instance; } }
+        public ILogger Logger
+        {
+            get { return this.log; }
+            set { this.log = value ?? NullLogger.Instance; }
+        }
 
         ///// <remarks>For windsor integration, this method is invoked after the component model is constructed.</remarks>
         //void IOnBehalfAware.SetInterceptedComponentModel(ComponentModel target)
@@ -132,19 +140,19 @@ namespace AspectCastle.Core
             switch (level)
             {
                 case LoggerLevel.Fatal:
-                    this._log.Fatal(message());
+                    this.log.Fatal(message());
                     break;
                 case LoggerLevel.Error:
-                    this._log.Error(message());
+                    this.log.Error(message());
                     break;
                 case LoggerLevel.Warn:
-                    this._log.Warn(message());
+                    this.log.Warn(message());
                     break;
                 case LoggerLevel.Info:
-                    this._log.Info(message());
+                    this.log.Info(message());
                     break;
                 case LoggerLevel.Debug:
-                    this._log.Debug(message());
+                    this.log.Debug(message());
                     break;
             }
         }
@@ -154,15 +162,15 @@ namespace AspectCastle.Core
             switch (level)
             {
                 case LoggerLevel.Fatal:
-                    return this._log.IsFatalEnabled;
+                    return this.log.IsFatalEnabled;
                 case LoggerLevel.Error:
-                    return this._log.IsErrorEnabled;
+                    return this.log.IsErrorEnabled;
                 case LoggerLevel.Warn:
-                    return this._log.IsWarnEnabled;
+                    return this.log.IsWarnEnabled;
                 case LoggerLevel.Info:
-                    return this._log.IsInfoEnabled;
+                    return this.log.IsInfoEnabled;
                 case LoggerLevel.Debug:
-                    return this._log.IsDebugEnabled;
+                    return this.log.IsDebugEnabled;
             }
             return false;
         }
@@ -181,7 +189,7 @@ namespace AspectCastle.Core
     {
         protected MarkerBaseAttribute()
         {
-            this.LogLevel = LoggerLevel.Debug;
+            this.LoggerLevel = LoggerLevel.Debug;
             this.Intercept = true;
         }
 
@@ -191,7 +199,7 @@ namespace AspectCastle.Core
         public int Order { get; set; }
 
         /// <summary>The logger level to use under <c>normal</c> use of an interceptor.  Exceptional cases may use a different level.  The default value is Debug.</summary>
-        public LoggerLevel LogLevel { get; set; }
+        public LoggerLevel LoggerLevel { get; set; }
 
         /// <summary>Gets or sets whether to intercept or not.</summary>
         public bool Intercept { get; set; }

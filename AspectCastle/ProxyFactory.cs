@@ -7,19 +7,19 @@ namespace AspectCastle
     /// <summary>A class which provides the ability to generate proxies which adhere to interception ordering and per-method features.</summary>
     public class ProxyFactory
     {
-        private readonly ProxyGenerator _generator = new ProxyGenerator();
-        private readonly ProxyGenerationOptions _proxyOptions = new ProxyGenerationOptions { Selector = new InterceptorSelector() };
+        private readonly ProxyGenerator generator = new ProxyGenerator(false);
+        private readonly ProxyGenerationOptions proxyOptions = new ProxyGenerationOptions { Selector = new InterceptorSelector() };
 
         /// <summary>Creates proxy object intercepting calls to virtual members of type classToProxy on newly created instance of that type with given interceptors.</summary>
         public object CreateClassProxy(Type classToProxy, params IInterceptor[] interceptors)
         {
-            return this._generator.CreateClassProxy(classToProxy, this._proxyOptions, interceptors);
+            return this.generator.CreateClassProxy(classToProxy, this.proxyOptions, interceptors);
         }
 
         /// <summary>Creates proxy object intercepting calls to virtual members of type classToProxy on newly created instance of that type with given interceptors.</summary>
         public object CreateClassProxy(object[] constructorArguments, Type classToProxy, params IInterceptor[] interceptors)
         {
-            return this._generator.CreateClassProxy(classToProxy, Type.EmptyTypes, this._proxyOptions, constructorArguments, interceptors);
+            return this.generator.CreateClassProxy(classToProxy, Type.EmptyTypes, this.proxyOptions, constructorArguments, interceptors);
         }
 
         /// <summary>Creates proxy object intercepting calls to virtual members of type classToProxy on newly created instance of that type with given interceptors.</summary>
@@ -37,7 +37,7 @@ namespace AspectCastle
         /// <summary>Creates proxy object intercepting calls to members of interface interfaceToProxy on target object with given interceptors.</summary>
         public object CreateInterfaceProxyWithTarget(object target, Type interfaceToProxy, params IInterceptor[] interceptors)
         {
-            return this._generator.CreateInterfaceProxyWithTarget(interfaceToProxy, target, this._proxyOptions, interceptors);
+            return this.generator.CreateInterfaceProxyWithTarget(interfaceToProxy, target, this.proxyOptions, interceptors);
         }
 
         /// <summary>Creates proxy object intercepting calls to members of interface interfaceToProxy on target object with given interceptors.</summary>
@@ -61,7 +61,7 @@ namespace AspectCastle
         /// <summary>Creates proxy object intercepting calls to members of interface interfaceToProxy on target object generated at runtime with given interceptors.</summary>
         public object CreateInterfaceProxyWithoutTarget(Type interfaceToProxy, Type[] additionalInterfacesToProxy, params IInterceptor[] interceptors)
         {
-            return this._generator.CreateInterfaceProxyWithoutTarget(interfaceToProxy, additionalInterfacesToProxy, this._proxyOptions, interceptors);
+            return this.generator.CreateInterfaceProxyWithoutTarget(interfaceToProxy, additionalInterfacesToProxy, this.proxyOptions, interceptors);
         }
     }
 }

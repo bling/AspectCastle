@@ -6,11 +6,11 @@ namespace AspectCastle
 {
     public class CircuitBreakerInterceptor : InterceptorBase<WithCircuitBreakerAttribute>
     {
-        private DateTime _lastTrip = DateTime.MinValue;
+        private DateTime lastTrip = DateTime.MinValue;
 
         protected override void Intercept(IInvocation invocation, WithCircuitBreakerAttribute marker)
         {
-            if (marker.State == CircuitState.Open && (DateTime.UtcNow - this._lastTrip) > TimeSpan.FromMilliseconds(marker.TimeoutMilliseconds))
+            if (marker.State == CircuitState.Open && (DateTime.UtcNow - this.lastTrip) > TimeSpan.FromMilliseconds(marker.TimeoutMilliseconds))
                 marker.State = CircuitState.HalfOpen;
 
             if (marker.State == CircuitState.Open)
@@ -41,7 +41,7 @@ namespace AspectCastle
 
         private void OpenCircuit(WithCircuitBreakerAttribute marker)
         {
-            this._lastTrip = DateTime.UtcNow;
+            this.lastTrip = DateTime.UtcNow;
             marker.State = CircuitState.Open;
             marker.Failures = 0;
         }

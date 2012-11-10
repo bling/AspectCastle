@@ -23,27 +23,28 @@ namespace AspectCastle
                 {
                     if (!marker.FilteredTypes.Contains(e.GetType()))
                     {
-                        Log(marker.LogLevel, () => "Exception not found in filters.  Rethrowing.");
+                        Log(marker.LoggerLevel, () => "Exception not found in filters.  Rethrowing.");
                         throw;
                     }
                 }
-                IHandler handler = invocation.InvocationTarget as IHandler;
+                
+                var handler = invocation.InvocationTarget as IHandler;
                 if (handler != null)
                 {
-                    Log(marker.LogLevel, () => "Invoking exception policy handler.");
+                    Log(marker.LoggerLevel, () => "Invoking exception policy handler.");
                     handler.HandleException(marker.Tag ?? invocation.Method.ToString(), e);
                 }
                 else
                 {
-                    Log(marker.LogLevel, () => "No exception policy handler set.");
+                    Log(marker.LoggerLevel, () => "No exception policy handler set.");
                 }
 
                 if (!marker.Swallow)
                 {
-                    Log(marker.LogLevel, () => "Exception is rethrown.");
+                    Log(marker.LoggerLevel, () => "Exception is rethrown.");
                     throw;
                 }
-                Log(marker.LogLevel, () => "Exception is swallowed as per the exception policy attribute.");
+                Log(marker.LoggerLevel, () => "Exception is swallowed as per the exception policy attribute.");
             }
         }
 
@@ -66,7 +67,7 @@ namespace AspectCastle
         public WithExceptionPolicyAttribute()
             : this(Type.EmptyTypes)
         {
-            LogLevel = LoggerLevel.Error;
+            this.LoggerLevel = LoggerLevel.Error;
         }
 
         /// <summary>Initializes a new instance of <see cref="WithExceptionPolicyAttribute"/>.</summary>
@@ -78,7 +79,7 @@ namespace AspectCastle
                     throw new ArgumentException("One of the types cannot be assigned to Exception.");
 
             this.FilteredTypes = filteredTypes;
-            LogLevel = LoggerLevel.Error;
+            this.LoggerLevel = LoggerLevel.Error;
         }
 
         /// <summary>

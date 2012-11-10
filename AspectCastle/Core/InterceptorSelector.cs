@@ -12,17 +12,17 @@ namespace AspectCastle.Core
     /// </summary>
     public sealed class InterceptorSelector : IInterceptorSelector
     {
-        private ILogger _logger = NullLogger.Instance;
+        private ILogger logger = NullLogger.Instance;
 
         /// <summary>Gets or sets the logger for this instance.</summary>
-        public ILogger Logger { get { return this._logger; } set { this._logger = value; } }
+        public ILogger Logger { get { return this.logger; } set { this.logger = value; } }
 
         IInterceptor[] IInterceptorSelector.SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
         {
             if (interceptors.Length == 0)
                 return interceptors;
 
-            List<MarkerBaseAttribute> markers = new List<MarkerBaseAttribute>();
+            var markers = new List<MarkerBaseAttribute>();
             if (type != null)
                 markers.AddRange(type.GetCustomAttributes(typeof(MarkerBaseAttribute), true).Cast<MarkerBaseAttribute>());
 
@@ -34,12 +34,12 @@ namespace AspectCastle.Core
 
             markers.Sort((a, b) => a.Order.CompareTo(b.Order));
 
-            List<IInterceptor> sorted = new List<IInterceptor>();
+            var sorted = new List<IInterceptor>();
             for (int i = 0; i < markers.Count; ++i)
             {
                 var providers = interceptors.OfType<IInterceptorMarkerProvider>();
-                Type markerType = markers[i].GetType();
-                IInterceptor matchingInterceptor = providers.FirstOrDefault(x => x.MarkerType == markerType) as IInterceptor;
+                var markerType = markers[i].GetType();
+                var matchingInterceptor = providers.FirstOrDefault(x => x.MarkerType == markerType) as IInterceptor;
                 if (matchingInterceptor != null)
                     sorted.Add(matchingInterceptor);
             }

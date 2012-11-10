@@ -42,11 +42,11 @@ namespace AspectCastle
             }
             finally
             {
-                TimeSpan elapsed = DateTime.UtcNow - start;
-                MetricsUpdateEventReason reason = metrics.Increment(elapsed);
+                var elapsed = DateTime.UtcNow - start;
+                var reason = metrics.Increment(elapsed);
                 if (reason != MetricsUpdateEventReason.None)
                 {
-                    Log(marker.LogLevel,
+                    Log(marker.LoggerLevel,
                         () => string.Format("{0}[{1}] metrics: {2}", invocation.TargetType.FullName, invocation.Method, metrics));
                     if (this.MetricsUpdated != null)
                     {

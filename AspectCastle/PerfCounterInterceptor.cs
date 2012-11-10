@@ -15,7 +15,7 @@ namespace AspectCastle
             public PerformanceCounter Perf, PerfBase;
         }
 
-        private static readonly Dictionary<WithPerfCounterAttribute, Pair> _cache = new Dictionary<WithPerfCounterAttribute, Pair>();
+        private static readonly Dictionary<WithPerfCounterAttribute, Pair> Cache = new Dictionary<WithPerfCounterAttribute, Pair>();
 
         protected override void Intercept(IInvocation invocation, WithPerfCounterAttribute marker)
         {
@@ -72,7 +72,7 @@ namespace AspectCastle
         protected virtual void Init(WithPerfCounterAttribute marker)
         {
             Pair pair;
-            if (_cache.TryGetValue(marker, out pair))
+            if (Cache.TryGetValue(marker, out pair))
             {
                 marker.PerfCounter = pair.Perf;
                 marker.PerfCounterBase = pair.PerfBase;
@@ -106,14 +106,14 @@ namespace AspectCastle
                     break;
             }
 
-            _cache[marker] = p;
+            Cache[marker] = p;
             marker.PerfCounter = p.Perf;
             marker.PerfCounterBase = p.PerfBase;
         }
 
         private static void Create(string categoryName, string counterHelp, PerformanceCounterType counterType)
         {
-            CounterCreationDataCollection cd = new CounterCreationDataCollection { new CounterCreationData("Value", counterHelp, counterType) };
+            var cd = new CounterCreationDataCollection { new CounterCreationData("Value", counterHelp, counterType) };
             switch (counterType)
             {
                 case PerformanceCounterType.AverageCount64:

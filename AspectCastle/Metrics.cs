@@ -4,23 +4,23 @@ namespace AspectCastle
 {
     public class Metrics
     {
-        private readonly WithMetricsAttribute _attribute;
-        private DateTime _start;
-        private DateTime _lastExpireTime = DateTime.MinValue;
-        private double _totalTime;
-        private double _totalSquaredTime;
+        private readonly WithMetricsAttribute attribute;
+        private DateTime start;
+        private DateTime lastExpireTime = DateTime.MinValue;
+        private double totalTime;
+        private double totalSquaredTime;
 
         internal Metrics(WithMetricsAttribute attribute)
         {
-            this._attribute = attribute;
+            this.attribute = attribute;
             Reset();
         }
 
         private void Reset()
         {
-            this._start = DateTime.UtcNow;
-            this._totalTime = 0;
-            this._totalSquaredTime = 0;
+            this.start = DateTime.UtcNow;
+            this.totalTime = 0;
+            this.totalSquaredTime = 0;
             this.MaxTime = TimeSpan.MinValue;
             this.MinTime = TimeSpan.MaxValue;
             this.Invocations = 0;
@@ -40,16 +40,16 @@ namespace AspectCastle
         public TimeSpan MinTime { get; private set; }
 
         /// <summary>Gets the average execution time.</summary>
-        public TimeSpan AvgTime { get { return this.Invocations > 0 ? TimeSpan.FromMilliseconds(this._totalTime / this.Invocations) : TimeSpan.Zero; } }
+        public TimeSpan AvgTime { get { return this.Invocations > 0 ? TimeSpan.FromMilliseconds(this.totalTime / this.Invocations) : TimeSpan.Zero; } }
 
         /// <summary>Gets the average number of times the method is called per second.</summary>
-        public double FrequencyPerSecond { get { return this.Invocations / (DateTime.UtcNow - this._start).TotalSeconds; } }
+        public double FrequencyPerSecond { get { return this.Invocations / (DateTime.UtcNow - this.start).TotalSeconds; } }
 
         /// <summary>Gets the average number of times the method is called per minute.</summary>
-        public double FrequencyPerMinute { get { return this.Invocations / (DateTime.UtcNow - this._start).TotalMinutes; } }
+        public double FrequencyPerMinute { get { return this.Invocations / (DateTime.UtcNow - this.start).TotalMinutes; } }
 
         /// <summary>Gets the average number of times the method is called per hour.</summary>
-        public double FrequencyPerHour { get { return this.Invocations / (DateTime.UtcNow - this._start).TotalHours; } }
+        public double FrequencyPerHour { get { return this.Invocations / (DateTime.UtcNow - this.start).TotalHours; } }
 
         /// <summary>Gets the current population variance of all measured values.</summary>
         public TimeSpan Variance { get { return TimeSpan.FromMilliseconds(CalculateVariance()); } }
@@ -59,9 +59,9 @@ namespace AspectCastle
 
         private double CalculateVariance()
         {
-            if (this._totalSquaredTime > 0 && this.Invocations > 0)
+            if (this.totalSquaredTime > 0 && this.Invocations > 0)
             {
-                double variance = (this._totalSquaredTime - (Math.Pow(this._totalTime, 2) / this.Invocations)) / this.Invocations;
+                double variance = (this.totalSquaredTime - (Math.Pow(this.totalTime, 2) / this.Invocations)) / this.Invocations;
                 if (variance > 0)
                     return variance;
             }
@@ -74,7 +74,7 @@ namespace AspectCastle
         {
             lock (this)
             {
-                MetricsUpdateEventReason reason = MetricsUpdateEventReason.None;
+                var reason = MetricsUpdateEventReason.None;
 
                 if (span > this.MaxTime)
                     this.MaxTime = span;
@@ -85,35 +85,35 @@ namespace AspectCastle
                 double milliseconds = span.TotalMilliseconds;
                 unchecked
                 {
-                    if (this._attribute.IsVarianceEnabled)
+                    if (this.attribute.IsVarianceEnabled)
                     {
                         double stddev = Math.Sqrt(CalculateVariance());
                         double average = this.AvgTime.TotalMilliseconds;
-                        double positive = average + (stddev * this._attribute.StandardDeviationThreshold);
-                        double negative = average - (stddev * this._attribute.StandardDeviationThreshold);
+                        double positive = average + (stddev * this.attribute.StandardDeviationThreshold);
+                        double negative = average - (stddev * this.attribute.StandardDeviationThreshold);
                         if (milliseconds > positive || milliseconds < negative)
                             reason = MetricsUpdateEventReason.StandardDeviationThreshold;
 
-                        this._totalSquaredTime += Math.Pow(milliseconds, 2);
+                        this.totalSquaredTime += Math.Pow(milliseconds, 2);
                     }
 
-                    this._totalTime += milliseconds;
+                    this.totalTime += milliseconds;
                     ++this.Invocations;
                 }
 
-                if ((DateTime.UtcNow - this._lastExpireTime).TotalMilliseconds > this._attribute.SampleInterval)
+                if ((DateTime.UtcNow - this.lastExpireTime).TotalMilliseconds > this.attribute.SampleInterval)
                 {
-                    this._lastExpireTime = DateTime.UtcNow;
+                    this.lastExpireTime = DateTime.UtcNow;
                     reason = MetricsUpdateEventReason.Sample;
                 }
 
-                if ((DateTime.UtcNow - this._start).TotalMilliseconds > this._attribute.ResetInterval)
+                if ((DateTime.UtcNow - this.start).TotalMilliseconds > this.attribute.ResetInterval)
                 {
                     Reset();
                     reason = MetricsUpdateEventReason.Reset;
                 }
 
-                if (milliseconds < this._attribute.MinimumThreshold)
+                if (milliseconds < this.attribute.MinimumThreshold)
                 {
                     reason = MetricsUpdateEventReason.None;
                 }
