@@ -6,7 +6,7 @@ namespace AspectCastle.Tests
     [TestFixture]
     public class SynchronizationTests
     {
-        private static readonly ProxyFactory _factory = new ProxyFactory();
+        private static readonly ProxyFactory Factory = new ProxyFactory();
 
         public class LockedTester : ISyncRootInstanceProvider
         {
@@ -27,7 +27,7 @@ namespace AspectCastle.Tests
 
         private static T Generate<T>()
         {
-            var proxy = _factory.CreateClassProxy(typeof(T), new SynchronizedInterceptor { Logger = TestUtil.CreateLogger() });
+            var proxy = Factory.CreateClassProxy(typeof(T), new SynchronizedInterceptor { Logger = TestUtil.CreateLogger() });
             return (T)proxy;
         }
 

@@ -8,7 +8,7 @@ namespace AspectCastle.Tests
     [TestFixture]
     public class OrderingTests
     {
-        private static readonly ProxyFactory _factory = new ProxyFactory();
+        private static readonly ProxyFactory Factory = new ProxyFactory();
 
         public class NonVirtualTester
         {
@@ -118,7 +118,7 @@ namespace AspectCastle.Tests
 
         private static T Generate<T>()
         {
-            var proxy = _factory.CreateClassProxy(typeof(T),
+            var proxy = Factory.CreateClassProxy(typeof(T),
                                                   new MethodInvocationInterceptor(),
                                                   new TransactionInterceptor(),
                                                   new ExceptionPolicyInterceptor(),

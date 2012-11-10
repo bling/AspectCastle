@@ -6,16 +6,16 @@ namespace AspectCastle.Tests
     [TestFixture]
     public class CacheTests
     {
-        private static readonly ProxyFactory _factory = new ProxyFactory();
+        private static readonly ProxyFactory Factory = new ProxyFactory();
 
         public class CacheTester
         {
-            private int _count;
+            private int count;
 
             [WithCache(CacheMilliseconds = 100)]
             public virtual int ReturnIncrement()
             {
-                return ++this._count;
+                return ++this.count;
             }
         }
 
@@ -23,7 +23,7 @@ namespace AspectCastle.Tests
         {
             var cacheInterceptor = new CacheInterceptor();
             cacheInterceptor.DefaultMarkerInstance = cacheInterceptor.DefaultMarkerInstance; // shut up code coverage
-            var proxy = _factory.CreateClassProxy(typeof(CacheTester), cacheInterceptor);
+            var proxy = Factory.CreateClassProxy(typeof(CacheTester), cacheInterceptor);
             return (CacheTester)proxy;
         }
 

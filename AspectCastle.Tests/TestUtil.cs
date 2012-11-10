@@ -22,7 +22,7 @@ namespace AspectCastle.Tests
             private readonly Action<string> receiver;
 
             public MockLogger(Action<string> receiver = null)
-                : base(LoggerLevel.Fatal)
+                : base(LoggerLevel.Debug)
             {
                 this.receiver = receiver ?? (_ => { });
             }

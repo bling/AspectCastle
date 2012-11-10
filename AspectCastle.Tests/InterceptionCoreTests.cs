@@ -42,13 +42,13 @@ namespace AspectCastle.Tests
             Assert.AreNotSame(values[1], values[2]);
         }
 
-        private readonly ProxyFactory _factory = new ProxyFactory();
+        private readonly ProxyFactory factory = new ProxyFactory();
 
         [Test]
         public void Each_marker_is_transient_per_method()
         {
             var interceptor = new MethodInvocationInterceptor();
-            var tester = this._factory.CreateClassProxy<Tester>(interceptor);
+            var tester = this.factory.CreateClassProxy<Tester>(interceptor);
             tester.Method1();
             tester.Method2();
             tester.Method3();
@@ -70,7 +70,7 @@ namespace AspectCastle.Tests
                     LoggerLevel = LoggerLevel.Fatal
                 }
             };
-            var tester = this._factory.CreateClassProxy<Tester>(interceptor);
+            var tester = this.factory.CreateClassProxy<Tester>(interceptor);
             tester.Method1();
             tester.Method2();
             tester.Method3();
@@ -85,8 +85,8 @@ namespace AspectCastle.Tests
         public void Markers_are_transient_per_implementation_method()
         {
             var interceptor = new MethodInvocationInterceptor();
-            var a = this._factory.CreateInterfaceProxyWithTarget<ITester>(new Tester(), interceptor);
-            var b = this._factory.CreateInterfaceProxyWithTarget<ITester>(new Tester2(), interceptor);
+            var a = this.factory.CreateInterfaceProxyWithTarget<ITester>(new Tester(), interceptor);
+            var b = this.factory.CreateInterfaceProxyWithTarget<ITester>(new Tester2(), interceptor);
             a.Method1();
             b.Method1();
 

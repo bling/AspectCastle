@@ -6,7 +6,7 @@ namespace AspectCastle.Tests
     [TestFixture]
     public class MethodInvocationTests
     {
-        private static readonly ProxyFactory _factory = new ProxyFactory();
+        private static readonly ProxyFactory Factory = new ProxyFactory();
 
         public class MethodLoggingTester
         {
@@ -29,7 +29,7 @@ namespace AspectCastle.Tests
 
         private static T Generate<T>(Action<string> messageInvoked)
         {
-            return _factory.CreateClassProxy<T>(new MethodInvocationInterceptor { Logger = TestUtil.CreateLogger(messageInvoked) });
+            return Factory.CreateClassProxy<T>(new MethodInvocationInterceptor { Logger = TestUtil.CreateLogger(messageInvoked) });
         }
 
         [Test]

@@ -6,17 +6,17 @@ namespace AspectCastle.Tests
     [TestFixture]
     public class TransactionTests
     {
-        private static readonly ProxyFactory _factory = new ProxyFactory();
+        private static readonly ProxyFactory Factory = new ProxyFactory();
 
         [WithTransaction]
         public class TransactionTester
         {
-            private readonly ReaderWriterLockSlim _rwlock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+            private readonly ReaderWriterLockSlim rwlock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
             public virtual void CauseError()
             {
-                this._rwlock.EnterWriteLock();
-                this._rwlock.EnterWriteLock();
+                this.rwlock.EnterWriteLock();
+                this.rwlock.EnterWriteLock();
             }
 
             public virtual void DoNothing()
@@ -26,7 +26,7 @@ namespace AspectCastle.Tests
 
         private static T Generate<T>()
         {
-            var proxy = _factory.CreateClassProxy(typeof(T), new TransactionInterceptor { Logger = TestUtil.CreateLogger() });
+            var proxy = Factory.CreateClassProxy(typeof(T), new TransactionInterceptor { Logger = TestUtil.CreateLogger() });
             return (T)proxy;
         }
 

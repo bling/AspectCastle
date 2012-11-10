@@ -7,7 +7,7 @@ namespace AspectCastle.Tests
     [TestFixture]
     public class InterceptorSelectorTests
     {
-        private readonly ProxyFactory _factory = new ProxyFactory();
+        private readonly ProxyFactory factory = new ProxyFactory();
 
         public interface IAttributePlacement
         {
@@ -37,14 +37,14 @@ namespace AspectCastle.Tests
         [Test]
         public void Selector_finds_attributes_declared_on_the_implementation()
         {
-            var proxy = this._factory.CreateInterfaceProxyWithTarget<IAttributePlacement>(new AttributePlacement(), new ExceptionPolicyInterceptor());
+            var proxy = this.factory.CreateInterfaceProxyWithTarget<IAttributePlacement>(new AttributePlacement(), new ExceptionPolicyInterceptor());
             Assert.DoesNotThrow(proxy.OnImplementation);
         }
 
         [Test]
         public void Selector_finds_attributes_declared_on_the_interface()
         {
-            var proxy = this._factory.CreateInterfaceProxyWithTarget<IAttributePlacement>(new AttributePlacement(), new ExceptionPolicyInterceptor());
+            var proxy = this.factory.CreateInterfaceProxyWithTarget<IAttributePlacement>(new AttributePlacement(), new ExceptionPolicyInterceptor());
             Assert.DoesNotThrow(proxy.OnInterface);
         }
 

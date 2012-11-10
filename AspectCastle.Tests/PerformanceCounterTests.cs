@@ -7,7 +7,7 @@ namespace AspectCastle.Tests
     [TestFixture]
     public class PerformanceCounterTests
     {
-        private static readonly ProxyFactory _factory = new ProxyFactory();
+        private static readonly ProxyFactory Factory = new ProxyFactory();
 
         public class Tester
         {
@@ -51,7 +51,7 @@ namespace AspectCastle.Tests
         [Test]
         public void Performance_counter_is_automatically_created()
         {
-            var tester = (Tester)_factory.CreateClassProxy(typeof(Tester), new PerfCounterInterceptor());
+            var tester = (Tester)Factory.CreateClassProxy(typeof(Tester), new PerfCounterInterceptor());
             tester.Method1();
             Assert.That(PerformanceCounterCategory.CounterExists("Value", "CAKE:Interception:Test1"));
             PerformanceCounterCategory.Delete("CAKE:Interception:Test1");
@@ -60,7 +60,7 @@ namespace AspectCastle.Tests
         [Test]
         public void Paired_performance_counters_also_create_the_base()
         {
-            var tester1 = (Tester)_factory.CreateClassProxy(typeof(Tester), new PerfCounterInterceptor());
+            var tester1 = (Tester)Factory.CreateClassProxy(typeof(Tester), new PerfCounterInterceptor());
             tester1.Average();
             tester1.Counter();
             tester1.Raw();
@@ -83,7 +83,7 @@ namespace AspectCastle.Tests
         [Test]
         public void Errors_creating_performance_counters_get_ignored_and_get_disabled()
         {
-            var tester1 = (Tester)_factory.CreateClassProxy(typeof(Tester), new TestInterceptor());
+            var tester1 = (Tester)Factory.CreateClassProxy(typeof(Tester), new TestInterceptor());
             Assert.That(tester1.Method1(), Is.EqualTo(1));
         }
     }

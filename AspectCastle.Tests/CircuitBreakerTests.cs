@@ -8,7 +8,7 @@ namespace AspectCastle.Tests
     [TestFixture]
     public class CircuitBreakerTests
     {
-        private static readonly ProxyFactory _factory = new ProxyFactory();
+        private static readonly ProxyFactory Factory = new ProxyFactory();
 
         public class Tester
         {
@@ -35,7 +35,7 @@ namespace AspectCastle.Tests
                     TimeoutMilliseconds = timeout,
                 }
             };
-            return _factory.CreateClassProxy<Tester>(interceptor);
+            return Factory.CreateClassProxy<Tester>(interceptor);
         }
 
         [Test]
