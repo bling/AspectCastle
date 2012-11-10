@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AspectCastle")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A lightweight AOP framework built on top of Castle DynamicProxy.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Bailey Ling")]
 [assembly: AssemblyProduct("AspectCastle")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
